@@ -1,0 +1,73 @@
+using Cosmos.HAL;
+using Cosmos.System.Network.Config;
+using Cosmos.System.Network.IPv4;
+using Cosmos.System.Network;
+using Cosmos.System.Network.IPv4.UDP.DNS;
+
+namespace SamsaOS
+{
+    public class Net
+    {
+        public static NetworkDevice networkDevice;
+        public static void Start()
+        {
+            Kernel.useNetwork = true;
+            networkDevice = NetworkDevice.GetDeviceByName("eth0");
+            IPConfig.Enable(networkDevice, new Address(192, 168, 0, 1), new Address(255, 255, 255, 0), new Address(192, 168, 1, 254));
+            if (NetworkConfiguration.CurrentAddress != null)
+            {
+                Kernel.networkConnected = true;
+            }
+            if (Kernel.GUIenabled) { GUI.ProcessManager.Run(new GUI.Net()); }
+        }
+        public static string GetInfo()
+        {
+            return Kernel.networkConnected ? "Local IP Address: " + NetworkConfiguration.CurrentAddress.ToString() : "Network disconnected";
+        }
+    }
+}
+namespace SamsaOS.GUI
+{
+    internal class Net : Process
+    {
+        public Net() : base("Network Service", ProcessManager.Priority.None) { }
+        internal override int Start()
+        {
+            if (Kernel.networkConnected) { Notify("Connected to Network", Icons.info); }
+            return 0;
+        }
+        internal override void Update()
+        {
+            //Kernel.useNetwork = NetworkConfiguration.CurrentAddress != null;
+        }
+        internal override int Stop(bool f) {
+            Kernel.networkConnected = false;
+            Kernel.useNetwork = false;
+            return 0;
+        }
+    }
+}
+namespace SamsaOS.Commands
+{
+    internal class Network : CommandsTree
+    {
+        internal Network() : base
+            ("Network", "Manages network.",
+            new Command[] {
+            new Command(new string[] {"net"}, "Displays current Network configuration.")
+            //new Command(new string[] {"ping"}, "Pings a specified target.", new string[] { "[target] - target to ping"})
+            })
+        {
+        }
+        internal override int Execute(string[] args, string rawInput, CommandShell shell)
+        {
+            switch (args[0])
+            {
+                case "net":
+                    shell.Print = Net.GetInfo();
+                    return 0;
+            }
+            return 1;
+        }
+    }
+}
