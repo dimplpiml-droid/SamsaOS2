@@ -1,4 +1,5 @@
 using Cosmos.Core;
+using Cosmos.Core.Memory;
 using Cosmos.System;
 using Cosmos.System.Graphics;
 using SamsaOS.GUI;
@@ -158,7 +159,8 @@ namespace SamsaOS.GUI
                             {
                                 case "BMP":
                                     byte[] data = F.OpenInBytes(pathToOpen);
-                                    //Toast.Debug("Success; " + data.Length);
+                                    Images.systemWallpaper = null;
+                                    Heap.Collect();
                                     Images.systemWallpaper = new Bitmap(data);
                                     GUI.ApplyRes();
                                     break;

@@ -1,4 +1,5 @@
 using Cosmos.Core;
+using Cosmos.Core.Memory;
 using Cosmos.System;
 using Cosmos.System.Graphics;
 using SamsaOS.Commands;
@@ -41,20 +42,9 @@ namespace SamsaOS.GUI
                 double almost = Sysinfo.UsedRAM;
                 AlphaBackground();
                 UI();
-                //RefreshBorder();
                 GUI.Loading = false;
                 double end = Sysinfo.UsedRAM;
                 if (Kernel.Debug) { Notify("Before operation: " + (int)beforebefore + "  Before ApplyRes: " + (int)before + "  After ApplyRes: " + (int)almost + "  After operation: " + (int)end); }
-            }
-            if (y2 > 105 && y2 < 135)
-            {
-                if (x2 > 5 && x2 < 35) { GUI.SystemPen = GUI.BluePen; }
-                if (x2 > 45 && x2 < 75) { GUI.SystemPen = GUI.RedPen; }
-                if (x2 > 85 && x2 < 115) { GUI.SystemPen = GUI.GreenPen; }
-                if (x2 > 125 && x2 < 155) { GUI.SystemPen = GUI.YellowPen; }
-                if (x2 > 165 && x2 < 195) { GUI.SystemPen = GUI.DarkBluePen; }
-                if (x2 > 205 && x2 < 235) { GUI.SystemPen = GUI.DarkGrayPen; }
-                if (x2 > 245 && x2 < 275) { GUI.SystemPen = GUI.DarkPen; }
             }
             if (y2 > 25 && y2 < 45)
             {
@@ -81,21 +71,14 @@ namespace SamsaOS.GUI
             DrawHorizontalLine(Color.White.ToArgb(), 60, 11, x);
             DrawStringAlpha("Wallpaper", Color.White.ToArgb(), 5, 50);
             DrawHorizontalLine(Color.White.ToArgb(), 85, 56, x);
-            DrawStringAlpha("Colours", Color.White.ToArgb(), 5, 85);
-            DrawHorizontalLine(Color.White.ToArgb(), 68, 91, x);
             DrawStringAlpha("Change background", Color.White.ToArgb(), 5, 70);
-            DrawFilledCircle(GUI.BluePen.ValueARGB, 20, 120, 15);
-            DrawFilledCircle(GUI.RedPen.ValueARGB, 60, 120, 15);
-            DrawFilledCircle(GUI.GreenPen.ValueARGB, 100, 120, 15);
-            DrawFilledCircle(GUI.YellowPen.ValueARGB, 140, 120, 15);
-            DrawFilledCircle(GUI.DarkBluePen.ValueARGB, 180, 120, 15);
-            DrawFilledCircle(GUI.DarkGrayPen.ValueARGB, 220, 120, 15);
-            DrawFilledCircle(GUI.DarkPen.ValueARGB, 260, 120, 15);
             DrawImageAlpha(cursor1, 15, 25);
             DrawImageAlpha(cursor2, 50, 25);
         }
         public static void LoadWallpaper()
         {
+            Images.systemWallpaper = null;
+            Heap.Collect();
             Images.systemWallpaper = wallpapernum switch
             {
                 1 => new Bitmap(Resources.WallpaperOld),

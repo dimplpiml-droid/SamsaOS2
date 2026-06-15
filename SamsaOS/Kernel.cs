@@ -11,7 +11,7 @@ namespace SamsaOS
 {
     public class Kernel : Sys.Kernel
     {
-        public static readonly string OSVERSION = "SamsaOS Version Alpha 0.6.1";
+        public static readonly string OSVERSION = "SamsaOS Version Alpha 1.0";
         public static readonly string OSNAME = "SamsaOS";
         public static string PCNAME = "pc";
         public static readonly string MAINDISK = "0:\\";
